@@ -1,0 +1,57 @@
+name: Setup SSH
+description: Action to setup SSH connection and update known_hosts at the job level
+inputs:
+  name:
+    required: false
+    description: Name of the SSH connection
+    default: 'server'
+  host:
+    required: true
+    description: A host to add to ~/.ssh/known_hosts
+  username:
+    required: true
+    description: Username for the SSH connection
+  port:
+    required: false
+    description: Port number for the SSH connection
+    default: 22
+  private-key:
+    required: true
+    description: Private key as a string
+  private-key-name:
+    required: false
+    description: name of ephemeral generated private key file
+    default: 'ssh_key'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Add ~/.ssh directory
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+
+    - name: Add private key
+      shell: bash
+      run: |
+        echo "${{ inputs.private-key }}" > ~/.ssh/ssh_key
+        chmod 600 ~/.ssh/ssh_key
+
+    - name: Add to known_hosts
+      shell: bash
+      run: |
+        ssh-keyscan ${{ inputs.host }} >> ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/known_hosts
+
+    - name: Create SSH config
+      shell: bash
+      run: |
+        echo "Host ${{ inputs.name }}" > ~/.ssh/config
+        echo "  HostName ${{ inputs.host }}" >> ~/.ssh/config
+        echo "  User ${{ inputs.username }}" >> ~/.ssh/config
+        echo "  Port ${{ inputs.port }}" >> ~/.ssh/config
+        echo "  IdentityFile ~/.ssh/ssh_key" >> ~/.ssh/config
+        echo "  IdentitiesOnly yes" >> ~/.ssh/config
+        echo "  StrictHostKeyChecking yes" >> ~/.ssh/config
+        chmod 600 ~/.ssh/config

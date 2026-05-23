@@ -1,0 +1,137 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Production deployment - triggered by push to main
+  deploy-production:
+    name: Deploy to Production
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Setup SSH
+        uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          private-key: ${{ secrets.SSH_KEY }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+
+      - name: Deploy to remote
+        env:
+          INFRA_DIR: ${{ vars.INFRA_DIR }}
+        run: |
+          # Create target directory for static files
+          ssh server <<EOF
+            mkdir -p $INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
+          EOF
+
+          # Copy built files to server
+          scp -r dist/* server:$INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
+
+      - name: Reload nginx
+        run: |
+          ssh server <<EOF
+            cd $INFRA_DIR
+            docker compose exec nginx nginx -s reload
+          EOF
+
+  # Staging deployment - triggered by successful CI workflow run on develop
+  deploy-staging:
+    name: Deploy to Staging
+    if: >-
+      github.event.workflow_run.conclusion == 'success' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Setup SSH
+        uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          private-key: ${{ secrets.SSH_KEY }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+
+      - name: Deploy to remote
+        env:
+          INFRA_DIR: ${{ vars.INFRA_DIR }}
+        run: |
+          # Create target directory for static files
+          ssh server <<EOF
+            mkdir -p $INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
+          EOF
+
+          # Copy built files to server
+          scp -r dist/* server:$INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
+
+      - name: Reload nginx
+        run: |
+          ssh server <<EOF
+            cd $INFRA_DIR
+            docker compose exec nginx nginx -s reload
+          EOF
