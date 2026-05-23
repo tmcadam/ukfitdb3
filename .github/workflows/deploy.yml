@@ -55,10 +55,10 @@ jobs:
       - name: Setup SSH
         uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ vars.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
+          username: ${{ vars.SSH_USER }}
+          port: ${{ vars.SSH_PORT }}
 
       - name: Deploy to remote
         env:
@@ -112,10 +112,10 @@ jobs:
       - name: Setup SSH
         uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ vars.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
+          username: ${{ vars.SSH_USER }}
+          port: ${{ vars.SSH_PORT }}
 
       - name: Deploy to remote
         env:
