@@ -86,12 +86,6 @@ jobs:
           # Copy built files to server
           scp -r dist/* server:$INFRA_DIR/nginx/html/$HTML_DIR
 
-      - name: Reload nginx
-        run: |
-          ssh server <<EOF
-            cd $INFRA_DIR
-            docker compose exec nginx nginx -s reload
-          EOF
 
   # Staging deployment - triggered by successful CI workflow run on develop
   deploy-staging:
@@ -142,10 +136,3 @@ jobs:
 
           # Copy built files to server
           scp -r dist/* server:$INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
-
-      - name: Reload nginx
-        run: |
-          ssh server <<EOF
-            cd $INFRA_DIR
-            docker compose exec nginx nginx -s reload
-          EOF
