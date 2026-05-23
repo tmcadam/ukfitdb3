@@ -4,7 +4,7 @@ function App() {
   return (
     <div className="App">
       <h1>Hello, Publications!</h1>
-      <p>Welcome to your Publications App boilerplate.</p>
+      <p>Welcome to your Publications App boilerplate. :-)</p>
     </div>
   )
 }

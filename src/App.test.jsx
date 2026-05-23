@@ -11,7 +11,7 @@ describe('App', () => {
 
   it('renders welcome message', () => {
     render(<App />)
-    const paragraphElement = screen.getByText(/Welcome to your Publications App boilerplate/i)
+    const paragraphElement = screen.getByText('Welcome to your Publications App boilerplate. :-)')
     expect(paragraphElement).toBeInTheDocument()
   })
 
