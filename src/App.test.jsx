@@ -5,7 +5,7 @@ import App from './App'
 describe('App', () => {
   it('renders hello world heading', () => {
     render(<App />)
-    const headingElement = screen.getByText(/Hello, World!/i)
+    const headingElement = screen.getByText(/Hello, Publications!/i)
     expect(headingElement).toBeInTheDocument()
   })
 

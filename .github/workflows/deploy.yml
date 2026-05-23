@@ -55,29 +55,37 @@ jobs:
       - name: Setup SSH
         uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ vars.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
+          username: ${{ vars.SSH_USER }}
+          port: ${{ vars.SSH_PORT }}
+
+      - name: Validate deployment variables
+        run: |
+          if [ -z "${{ vars.INFRA_DIR }}" ]; then
+            echo "Error: INFRA_DIR GitHub variable is not set"
+            exit 1
+          fi
+          if [ -z "${{ vars.HTML_DIR }}" ]; then
+            echo "Error: HTML_DIR GitHub variable is not set"
+            exit 1
+          fi
+          echo "INFRA_DIR: ${{ vars.INFRA_DIR }}"
+          echo "HTML_DIR: ${{ vars.HTML_DIR }}"
 
       - name: Deploy to remote
         env:
           INFRA_DIR: ${{ vars.INFRA_DIR }}
+          HTML_DIR: ${{ vars.HTML_DIR }}
         run: |
           # Create target directory for static files
           ssh server <<EOF
-            mkdir -p $INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
+            mkdir -p $INFRA_DIR/nginx/html/$HTML_DIR
           EOF
 
           # Copy built files to server
-          scp -r dist/* server:$INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
+          scp -r dist/* server:$INFRA_DIR/nginx/html/$HTML_DIR
 
-      - name: Reload nginx
-        run: |
-          ssh server <<EOF
-            cd $INFRA_DIR
-            docker compose exec nginx nginx -s reload
-          EOF
 
   # Staging deployment - triggered by successful CI workflow run on develop
   deploy-staging:
@@ -112,10 +120,10 @@ jobs:
       - name: Setup SSH
         uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ vars.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
+          username: ${{ vars.SSH_USER }}
+          port: ${{ vars.SSH_PORT }}
 
       - name: Deploy to remote
         env:
@@ -128,10 +136,3 @@ jobs:
 
           # Copy built files to server
           scp -r dist/* server:$INFRA_DIR/nginx/html/${{ vars.HTML_DIR }}
-
-      - name: Reload nginx
-        run: |
-          ssh server <<EOF
-            cd $INFRA_DIR
-            docker compose exec nginx nginx -s reload
-          EOF
