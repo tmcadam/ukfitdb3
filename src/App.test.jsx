@@ -56,12 +56,6 @@ describe('App', () => {
     expect(searchInput).toBeInTheDocument()
   })
 
-  it('renders the search button', () => {
-    render(<App />)
-    const searchButton = document.getElementById('searchButton')
-    expect(searchButton).toBeInTheDocument()
-  })
-
   it('renders the introduction content', () => {
     render(<App />)
     const heading = screen.getByText(/Welcome to the FIT Publications Database/i)

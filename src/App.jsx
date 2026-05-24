@@ -28,10 +28,20 @@ function App() {
     loadPublications();
   }, [loadPublications]);
 
-  const handleSearch = () => {
-    search(publications);
-    setCurrentView(Display.RESULTS);
-  };
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      search(publications);
+      if (currentView !== Display.RESULTS) {
+        setCurrentView(Display.RESULTS);
+      }
+    }
+  }, [searchTerm, publications, currentView]);
+
+  useEffect(() => {
+    if (searchTerm.trim() === '' && currentView === Display.RESULTS) {
+      setCurrentView(Display.HOME);
+    }
+  }, [searchTerm, currentView]);
 
   const navHome = () => {
     clearSearch();
@@ -62,7 +72,6 @@ function App() {
         <Search
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
-          onSearch={handleSearch}
           loadingStatus={loadingStatus}
           isHero={currentView === Display.HOME}
         />
