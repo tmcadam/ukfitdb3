@@ -50,26 +50,15 @@ function App() {
       <nav className="nav-bar" role="navigation">
         <div className="nav-wrapper">
           <a
-            className="brand-logo desktop-only"
+            className="brand-logo"
             href="#"
             onClick={(e) => {
               e.preventDefault();
               navHome();
             }}
           >
-            <img src={fitLogo} alt="FIT Logo" height="50" className="h-12 w-auto" />
-            <span className="text-lg font-medium">FIT Publications Database</span>
-          </a>
-          <a
-            className="brand-logo mobile-only"
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              navHome();
-            }}
-          >
-            <img src={fitLogo} alt="FIT Logo" height="40" className="h-10 w-auto" />
-            <span className="text-sm font-medium">FIT Publications Database</span>
+            <img src={fitLogo} alt="FIT Logo" height="40" className="h-10 md:h-12 w-auto" />
+            <span className="text-base md:text-lg">FIT Publications Database</span>
           </a>
         </div>
 
@@ -92,13 +81,14 @@ function App() {
           onSearchTermChange={handleSearchTermChange}
           onSearch={handleSearch}
           loadingStatus={loadingStatus}
+          isHero={currentView === Display.HOME}
         />
 
         {currentView === Display.HOME && <Introduction />}
         {currentView === Display.RESULTS && <Results results={results} />}
 
         {/* Floating action buttons */}
-        <div className="floating-action-btn desktop-only">
+        <div className="floating-action-btn hidden md:block">
           <button className="fab-button large" aria-label="Menu">
             <span className="text-2xl">&#9776;</span>
           </button>

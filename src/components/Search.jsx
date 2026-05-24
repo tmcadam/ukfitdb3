@@ -2,9 +2,8 @@ import React from 'react';
 
 /**
  * Search component - provides search input and button.
- * Mirrors the Angular SearchComponent.
  */
-function Search({ searchTerm, onSearchTermChange, onSearch, loadingStatus }) {
+function Search({ searchTerm, onSearchTermChange, onSearch, loadingStatus, isHero }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       onSearch();
@@ -12,36 +11,38 @@ function Search({ searchTerm, onSearchTermChange, onSearch, loadingStatus }) {
   };
 
   return (
-    <div className="search-container">
+    <div className={`transition-all duration-500 ease-in-out ${isHero ? 'py-12 md:py-20 max-w-4xl mx-auto text-center' : 'mb-8 max-w-4xl mx-auto'}`}>
+      {isHero && (
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+            Explore the Trust's Publications
+          </h1>
+          <p className="text-lg text-gray-600">
+            Search our comprehensive database of documents, reports, and historic records.
+          </p>
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
           <input
             id="searchInput"
             type="text"
-            className="search-input"
-            placeholder="Enter a search term"
+            className="w-full px-6 py-4 border border-gray-300 rounded-xl shadow-sm text-lg bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+            placeholder="Enter a keyword, title, author, or year..."
             value={searchTerm}
             onChange={(e) => onSearchTermChange(e.target.value)}
             onKeyDown={handleKeyDown}
           />
         </div>
-        <div className="sm:w-32">
+        <div className="sm:w-auto">
           <button
-            className="search-btn desktop-only"
+            className="w-full sm:w-auto px-8 h-full min-h-[60px] bg-primary hover:bg-primary-dark text-white rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 font-semibold text-lg"
             id="searchButton"
             onClick={onSearch}
             disabled={loadingStatus}
           >
-            <span className="text-xl">&#128269;</span>
-            <span className="hidden sm:inline">Search</span>
-          </button>
-          <button
-            className="search-btn mobile-only"
-            id="searchButton"
-            onClick={onSearch}
-            disabled={loadingStatus}
-          >
-            <span className="text-xl">&#128269;</span>
+            <span className="text-2xl">&#128269;</span>
+            <span className="inline">Search</span>
           </button>
         </div>
       </div>

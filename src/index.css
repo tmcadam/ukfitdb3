@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1976d2;
-  --color-primary-dark: #1565c0;
-  --color-primary-light: #42a5f5;
-  --color-accent-green: #4caf50;
-  --color-accent-red: #f44336;
-  --color-accent-yellow: #ffc107;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #3b82f6;
+  --color-accent-green: #10b981;
+  --color-accent-red: #ef4444;
+  --color-accent-yellow: #f59e0b;
 }
 
 /* Base styles */
@@ -30,25 +30,25 @@
 @layer components {
   /* App container */
   .app-container {
-    @apply min-h-screen flex flex-col;
+    @apply min-h-screen flex flex-col bg-gray-50;
   }
 
   /* Navbar */
   .nav-bar {
-    @apply sticky top-0 z-50 bg-primary text-white shadow-md;
+    @apply sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 text-gray-800 shadow-sm transition-all;
   }
 
   .nav-wrapper {
-    @apply flex items-center justify-between px-4 py-2;
+    @apply flex items-center justify-between px-4 py-3 max-w-6xl mx-auto;
   }
 
   .brand-logo {
-    @apply inline-flex items-center gap-2 flex-nowrap text-white font-medium no-underline hover:opacity-90 transition-opacity;
+    @apply inline-flex items-center gap-3 flex-nowrap text-gray-900 font-bold tracking-tight no-underline hover:opacity-80 transition-opacity;
   }
 
   /* Progress bar */
   .progress-bar {
-    @apply absolute bottom-0 left-0 right-0 h-1 bg-white/20;
+    @apply absolute bottom-0 left-0 right-0 h-1 bg-gray-200;
   }
 
   .progress-fill {
@@ -57,103 +57,7 @@
 
   /* Main content */
   .main-content {
-    @apply flex-1 px-4 py-6 max-w-6xl mx-auto w-full;
-  }
-
-  /* Search container */
-  .search-container {
-    @apply mb-6;
-  }
-
-  .search-input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm
-           text-base bg-white placeholder-gray-400
-           focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-           transition-all duration-200;
-  }
-
-  .search-btn {
-    @apply w-full h-12 bg-accent-green text-white rounded-lg shadow-md
-           hover:bg-green-600 active:scale-95
-           transition-all duration-200 flex items-center justify-center gap-2;
-  }
-
-  .search-btn:disabled {
-    @apply opacity-50 cursor-not-allowed;
-  }
-
-  /* Results table */
-  .results-table {
-    @apply w-full border-collapse bg-white rounded-lg shadow-md overflow-hidden;
-  }
-
-  .results-table thead {
-    @apply bg-primary text-white;
-  }
-
-  .results-table th {
-    @apply px-4 py-3 text-left font-semibold;
-  }
-
-  .results-table td {
-    @apply px-4 py-3 border-b border-gray-100;
-  }
-
-  .results-table tbody tr.result-row {
-    @apply cursor-pointer transition-colors duration-150;
-  }
-
-  .results-table tbody tr.result-row:hover {
-    @apply bg-gray-50;
-  }
-
-  .results-table tbody tr.result-row.expanded {
-    @apply bg-blue-50;
-  }
-
-  .expand-icon {
-    @apply inline-block w-5 text-center transition-transform duration-200;
-  }
-
-  .expand-icon.expanded {
-    @apply rotate-90;
-  }
-
-  .detail-row {
-    @apply bg-gray-50;
-  }
-
-  .table-detail {
-    @apply p-4;
-  }
-
-  .table-detail .heading {
-    @apply font-bold text-primary;
-  }
-
-  /* Mobile collapsible list */
-  .collapsible-list {
-    @apply divide-y divide-gray-200 bg-white rounded-lg shadow-md;
-  }
-
-  .collapsible-item {
-    @apply transition-colors duration-150;
-  }
-
-  .collapsible-header {
-    @apply p-4 cursor-pointer flex items-center justify-between bg-white hover:bg-gray-50 transition-colors;
-  }
-
-  .collapsible-header-title {
-    @apply flex-1 font-medium;
-  }
-
-  .collapsible-id {
-    @apply text-gray-500 text-sm ml-2;
-  }
-
-  .collapsible-body {
-    @apply p-4 bg-gray-50 border-t border-gray-100;
+    @apply flex-1 px-4 py-8 max-w-6xl mx-auto w-full;
   }
 
   /* Floating action button */
@@ -184,7 +88,7 @@
   }
 
   .footer-content {
-    @apply bg-primary text-white py-4 shadow-md;
+    @apply bg-white border-t border-gray-200 text-gray-600 py-6;
   }
 
   /* Utility classes */
@@ -194,7 +98,7 @@
 
   /* Logo styles */
   .logo-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto;
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto items-center;
   }
 
   .logo-item {
@@ -202,27 +106,27 @@
   }
 
   .responsive-img {
-    @apply max-w-full h-auto;
+    @apply max-w-full h-auto drop-shadow-sm rounded-lg;
   }
 
   /* Introduction */
   .introduction-container {
-    @apply max-w-4xl mx-auto;
+    @apply max-w-4xl mx-auto text-center py-6;
   }
 
   .introduction-container h5 {
-    @apply text-primary text-2xl font-bold mb-4;
+    @apply text-primary-dark text-3xl font-extrabold mb-6 tracking-tight;
   }
 
   .introduction-container p {
-    @apply text-gray-700 leading-relaxed mb-4;
+    @apply text-gray-600 leading-relaxed mb-4 text-lg;
   }
 
   /* Loading animation */
   @keyframes pulse-ring {
-    0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
   }
 
   .pulse-animation {
@@ -233,20 +137,5 @@
   .disabled-state {
     @apply opacity-50 pointer-events-none;
   }
-
-  /* Striped table */
-  .striped-table tbody tr:nth-child(even) {
-    @apply bg-gray-50;
-  }
 }
 
-@layer utilities {
-  /* Mobile/Desktop visibility utilities */
-  .mobile-only {
-    @apply block md:hidden;
-  }
-
-  .desktop-only {
-    @apply hidden md:block;
-  }
-}
