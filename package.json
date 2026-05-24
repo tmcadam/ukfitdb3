@@ -1,6 +1,7 @@
 {
   "name": "react-hello-world",
   "version": "1.0.0",
+  "type": "module",
   "description": "A simple React hello world boilerplate with tests",
   "main": "src/main.jsx",
   "scripts": {

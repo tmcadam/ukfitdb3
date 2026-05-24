@@ -11,9 +11,7 @@ function App() {
   const {
     publications,
     loadingStatus,
-    loadingProgress,
     loadPublications,
-    reloadPublications,
   } = usePublications();
 
   const {
@@ -40,45 +38,30 @@ function App() {
     setCurrentView(Display.HOME);
   };
 
-  const handleSearchTermChange = (value) => {
-    setSearchTerm(value);
-  };
-
   return (
-    <div className="app-container">
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
       {/* Navbar */}
-      <nav className="nav-bar" role="navigation">
-        <div className="nav-wrapper">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 text-gray-800 shadow-sm" role="navigation">
+        <div className="flex items-center px-4 py-3 max-w-6xl mx-auto">
           <a
-            className="brand-logo"
+            className="inline-flex items-center gap-3 text-gray-900 font-bold tracking-tight no-underline hover:opacity-80 transition-opacity"
             href="#"
             onClick={(e) => {
               e.preventDefault();
               navHome();
             }}
           >
-            <img src={fitLogo} alt="FIT Logo" height="40" className="h-10 md:h-12 w-auto" />
+            <img src={fitLogo} alt="FIT Logo" className="h-10 md:h-12 w-auto" />
             <span className="text-base md:text-lg">FIT Publications Database</span>
           </a>
-        </div>
-
-        {/* Progress bar */}
-        <div
-          className="progress-bar"
-          style={{ display: loadingStatus ? 'block' : 'none' }}
-        >
-          <div
-            className="progress-fill"
-            style={{ width: `${loadingProgress}%` }}
-          ></div>
         </div>
       </nav>
 
       {/* Main content */}
-      <div className="main-content">
+      <main className="flex-1 px-4 py-8 max-w-6xl mx-auto w-full">
         <Search
           searchTerm={searchTerm}
-          onSearchTermChange={handleSearchTermChange}
+          onSearchTermChange={setSearchTerm}
           onSearch={handleSearch}
           loadingStatus={loadingStatus}
           isHero={currentView === Display.HOME}
@@ -86,43 +69,11 @@ function App() {
 
         {currentView === Display.HOME && <Introduction />}
         {currentView === Display.RESULTS && <Results results={results} />}
-
-        {/* Floating action buttons */}
-        <div className="floating-action-btn hidden md:block">
-          <button className="fab-button large" aria-label="Menu">
-            <span className="text-2xl">&#9776;</span>
-          </button>
-          <div className="flex flex-col mt-2.5">
-            <button
-              className="fab-button red"
-              id="btn-home"
-              onClick={navHome}
-              aria-label="Home"
-            >
-              <span>&#8962;</span>
-            </button>
-            <button
-              className="fab-button yellow"
-              id="btn-refresh"
-              onClick={reloadPublications}
-              style={{
-                boxShadow: loadingStatus ? '0 0 0 3px rgba(255,235,59,0.5)' : 'none',
-              }}
-              aria-label="Refresh"
-            >
-              <span>&#8635;</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      </main>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="text-center-custom">
-            @2013 Falkland Islands Trust
-          </div>
-        </div>
+      <footer className="mt-auto bg-white border-t border-gray-200 text-gray-600 py-6 text-center">
+        @2013 Falkland Islands Trust
       </footer>
     </div>
   );

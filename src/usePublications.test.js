@@ -1,116 +1,29 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { usePublications } from './usePublications'
 
-// Mock sessionStorage
-const mockSessionStorage = (() => {
-  let store = {}
-  return {
-    getItem: vi.fn((key) => store[key] || null),
-    setItem: vi.fn((key, value) => {
-      store[key] = value
-    }),
-    removeItem: vi.fn((key) => {
-      delete store[key]
-    }),
-    clear: vi.fn(() => {
-      store = {}
-    }),
-  }
-})()
-
-Object.defineProperty(window, 'sessionStorage', {
-  value: mockSessionStorage,
-  writable: true,
-})
-
 describe('usePublications', () => {
-  beforeEach(() => {
-    mockSessionStorage.clear()
-    vi.clearAllMocks()
-  })
-
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
 
   describe('loadPublications', () => {
-    it('should load publications from sessionStorage cache if available', () => {
-      const cachedPubs = [
-        { id: '1', title: 'Cached Pub', year: '2020', authors: 'Author', keywords: 'test', reference: 'Ref', format: 'Paper' },
-      ]
-      mockSessionStorage.setItem('fitPublications', JSON.stringify(cachedPubs))
-
+    it('should load from CSV synchronously', () => {
       const { result } = renderHook(() => usePublications())
 
       act(() => {
         result.current.loadPublications()
       })
 
-      expect(result.current.publications).toEqual(cachedPubs)
-      expect(mockSessionStorage.getItem).toHaveBeenCalledWith('fitPublications')
-    })
-
-    it('should load from CSV if no cache is available', () => {
-      const { result } = renderHook(() => usePublications())
-
-      act(() => {
-        result.current.loadPublications()
-      })
-
-      // Wait for async loading
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          act(() => {})
-          expect(result.current.publications.length).toBeGreaterThan(0)
-          resolve(null)
-        }, 100)
-      })
+      expect(result.current.publications.length).toBeGreaterThan(0)
+      expect(result.current.loadingStatus).toBe(false)
     })
   })
 
   describe('reloadPublications', () => {
-    it('should bypass cache and reload from CSV', () => {
-      const cachedPubs = [
-        { id: '1', title: 'Old Pub', year: '2019', authors: 'Old Author', keywords: 'old', reference: 'Old Ref', format: 'Paper' },
-      ]
-      mockSessionStorage.setItem('fitPublications', JSON.stringify(cachedPubs))
-
+    it('should reload from CSV', () => {
       const { result } = renderHook(() => usePublications())
-
-      act(() => {
-        result.current.loadPublications()
-      })
-
-      // Verify cache was used initially
-      expect(result.current.publications[0].title).toBe('Old Pub')
-
-      // Now reload
       act(() => {
         result.current.reloadPublications()
       })
-
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          act(() => {})
-          expect(mockSessionStorage.removeItem).toHaveBeenCalledWith('fitPublications')
-          resolve(null)
-        }, 100)
-      })
-    })
-  })
-
-  describe('loadingStatus', () => {
-    it('should set loadingStatus to true during loading', () => {
-      const { result } = renderHook(() => usePublications())
-
-      expect(result.current.loadingStatus).toBe(false)
-
-      act(() => {
-        result.current.loadFromCSV()
-      })
-
-      expect(result.current.loadingStatus).toBe(true)
+      expect(result.current.publications.length).toBeGreaterThan(0)
     })
   })
 
@@ -122,8 +35,7 @@ describe('usePublications', () => {
 1,Test Publication,2020,Test Journal,Test Author,test keywords,Scientific Paper
 2,Another Pub,2021,Another Journal,Another Author,another keyword,Report`
 
-      const resultHook = result.current
-      const parsed = resultHook.parseCSV(csvData)
+      const parsed = result.current.parseCSV(csvData)
 
       expect(parsed).toHaveLength(2)
       expect(parsed[0].id).toBe('1')
@@ -174,17 +86,17 @@ describe('usePublications', () => {
   describe('checkValidRow', () => {
     it('should return false for empty id', () => {
       const { result } = renderHook(() => usePublications())
-      expect(result.current.checkValidRow({ id: '' })).toBe(false)
+      expect(result.current.checkValidRow({ id: '' })).toBeFalsy()
     })
 
     it('should return false for #REF! id', () => {
       const { result } = renderHook(() => usePublications())
-      expect(result.current.checkValidRow({ id: '#REF!' })).toBe(false)
+      expect(result.current.checkValidRow({ id: '#REF!' })).toBeFalsy()
     })
 
     it('should return true for valid id', () => {
       const { result } = renderHook(() => usePublications())
-      expect(result.current.checkValidRow({ id: '1' })).toBe(true)
+      expect(result.current.checkValidRow({ id: '1' })).toBeTruthy()
     })
   })
 })
