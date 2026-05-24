@@ -13,36 +13,36 @@ function Search({ searchTerm, onSearchTermChange, onSearch, loadingStatus }) {
 
   return (
     <div className="search-container">
-      <div className="row search">
-        <div className="input-field col s1"></div>
-        <div className="input-field col s8 m8 l9">
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex-1">
           <input
             id="searchInput"
             type="text"
-            className="form-control"
+            className="search-input"
             placeholder="Enter a search term"
             value={searchTerm}
             onChange={(e) => onSearchTermChange(e.target.value)}
             onKeyDown={handleKeyDown}
           />
         </div>
-        <div className="input-field col s3 m3 l2">
-          <a
-            className="waves-effect waves-light btn desktop-only search-btn"
+        <div className="sm:w-32">
+          <button
+            className="search-btn desktop-only"
             id="searchButton"
             onClick={onSearch}
-            style={{ opacity: loadingStatus ? 0.5 : 1, pointerEvents: loadingStatus ? 'none' : 'auto' }}
+            disabled={loadingStatus}
           >
-            <i className="material-icons align-center">search</i>
-          </a>
-          <a
-            className="waves-effect waves-light mobile-only search-btn"
+            <span className="text-xl">&#128269;</span>
+            <span className="hidden sm:inline">Search</span>
+          </button>
+          <button
+            className="search-btn mobile-only"
             id="searchButton"
             onClick={onSearch}
-            style={{ opacity: loadingStatus ? 0.5 : 1, pointerEvents: loadingStatus ? 'none' : 'auto' }}
+            disabled={loadingStatus}
           >
-            <i className="material-icons">search</i>
-          </a>
+            <span className="text-xl">&#128269;</span>
+          </button>
         </div>
       </div>
     </div>

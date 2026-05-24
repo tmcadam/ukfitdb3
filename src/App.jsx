@@ -45,48 +45,48 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="app-container">
       {/* Navbar */}
-      <nav className="blue nav-bar" role="navigation">
-        <div className="nav-wrapper container">
+      <nav className="nav-bar" role="navigation">
+        <div className="nav-wrapper">
           <a
-            className="brand-logo left desktop-only"
+            className="brand-logo desktop-only"
             href="#"
             onClick={(e) => {
               e.preventDefault();
               navHome();
             }}
           >
-            <img src={fitLogo} alt="FIT Logo" height="50" />
-            <span className="brand-text">FIT Publications Database</span>
+            <img src={fitLogo} alt="FIT Logo" height="50" className="h-12 w-auto" />
+            <span className="text-lg font-medium">FIT Publications Database</span>
           </a>
           <a
-            className="brand-logo left mobile-only"
+            className="brand-logo mobile-only"
             href="#"
             onClick={(e) => {
               e.preventDefault();
               navHome();
             }}
           >
-            <img src={fitLogo} alt="FIT Logo" height="40" />
-            <span className="brand-text-small">FIT Publications Database</span>
+            <img src={fitLogo} alt="FIT Logo" height="40" className="h-10 w-auto" />
+            <span className="text-sm font-medium">FIT Publications Database</span>
           </a>
         </div>
 
         {/* Progress bar */}
         <div
-          className="progress"
+          className="progress-bar"
           style={{ display: loadingStatus ? 'block' : 'none' }}
         >
           <div
-            className="determinate blue darken-2"
-            style={{ width: loadingProgress }}
+            className="progress-fill"
+            style={{ width: `${loadingProgress}%` }}
           ></div>
         </div>
       </nav>
 
       {/* Main content */}
-      <div className="container main-content">
+      <div className="main-content">
         <Search
           searchTerm={searchTerm}
           onSearchTermChange={handleSearchTermChange}
@@ -98,43 +98,39 @@ function App() {
         {currentView === Display.RESULTS && <Results results={results} />}
 
         {/* Floating action buttons */}
-        <div className="fixed-action-btn vertical click-to-toggle desktop-only">
-          <a className="btn-floating btn-large green">
-            <i className="large material-icons">menu</i>
-          </a>
-          <ul>
-            <li>
-              <a
-                className="btn-floating red"
-                id="btn-home"
-                onClick={navHome}
-              >
-                <i className="material-icons">home</i>
-              </a>
-            </li>
-            <li>
-              <a
-                className="btn-floating yellow darken-1"
-                id="btn-refresh"
-                onClick={reloadPublications}
-                style={{
-                  boxShadow: loadingStatus ? '0 0 0 3px rgba(255,235,59,0.5)' : 'none',
-                }}
-              >
-                <i className="material-icons">refresh</i>
-              </a>
-            </li>
-          </ul>
+        <div className="floating-action-btn desktop-only">
+          <button className="fab-button large" aria-label="Menu">
+            <span className="text-2xl">&#9776;</span>
+          </button>
+          <div className="flex flex-col mt-2.5">
+            <button
+              className="fab-button red"
+              id="btn-home"
+              onClick={navHome}
+              aria-label="Home"
+            >
+              <span>&#8962;</span>
+            </button>
+            <button
+              className="fab-button yellow"
+              id="btn-refresh"
+              onClick={reloadPublications}
+              style={{
+                boxShadow: loadingStatus ? '0 0 0 3px rgba(255,235,59,0.5)' : 'none',
+              }}
+              aria-label="Refresh"
+            >
+              <span>&#8635;</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer>
-        <div className="blue z-depth-2">
-          <div className="container copyright">
-            <span className="center-align copyright">
-              &copy; 2013-18 Falkland Islands Trust
-            </span>
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="text-center-custom">
+            @2013 Falkland Islands Trust
           </div>
         </div>
       </footer>

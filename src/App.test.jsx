@@ -61,7 +61,7 @@ describe('App', () => {
 
   it('renders the main app container', () => {
     render(<App />)
-    const appContainer = document.querySelector('.App')
+    const appContainer = document.querySelector('.app-container')
     expect(appContainer).toBeInTheDocument()
   })
 
@@ -113,7 +113,7 @@ describe('App', () => {
 
   it('hides loading progress when not loading', () => {
     render(<App />)
-    const progress = document.querySelector('div.progress')
+    const progress = document.querySelector('.progress-bar')
     expect(progress).toHaveStyle({ display: 'none' })
   })
 

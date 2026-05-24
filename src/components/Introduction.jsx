@@ -22,7 +22,12 @@ function Introduction() {
       </p>
       <p>
         A comprehensive database has been prepared by{' '}
-        <a href="https://www.ukfit.org" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://www.ukfit.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline font-medium"
+        >
           Falkland Islands Trust
         </a>{' '}
         (with support from Fortuna Ltd and The Falkland Islands Government)
@@ -31,29 +36,26 @@ function Introduction() {
         Falkland Islands. Use the search box at the top this page to begin using
         the database. Currently the database is managed by the Falkland Islands
         Trust. If you have any suggestions or queries contact{' '}
-        <a href="mailto:jim.mcadam@ukfit.org">Professor Jim McAdam</a>.
+        <a
+          href="mailto:jim.mcadam@ukfit.org"
+          className="text-primary hover:underline font-medium"
+        >
+          Professor Jim McAdam
+        </a>.
       </p>
       <p>
-        <b>
+        <span className="font-semibold">
           Developed by the Falkand Islands Trust with the support of the Falkland
           Islands Government and Fortuna Ltd.
-        </b>
+        </span>
       </p>
-      <div className="container logos">
-        <div className="row">
-          <div className="col s0 m2 l2"></div>
-          <div className="col s12 m4 l4 center-align">
-            <img src={fitLogo} alt="FIT Logo" className="responsive-img" />
-          </div>
-          <div className="col s12 m4 l4 center-align">
-            <div className="row img-row">
-              <img src={fkLogo} alt="FK Logo" className="responsive-img" />
-            </div>
-            <div className="row img-row">
-              <img src={fortunaLogo} alt="Fortuna Logo" className="responsive-img" />
-            </div>
-          </div>
-          <div className="col s0 m2 l2"></div>
+      <div className="logo-grid mt-8">
+        <div className="logo-item">
+          <img src={fitLogo} alt="FIT Logo" className="responsive-img max-w-xs" />
+        </div>
+        <div className="logo-item flex flex-col gap-4">
+          <img src={fkLogo} alt="FK Logo" className="responsive-img max-w-xs" />
+          <img src={fortunaLogo} alt="Fortuna Logo" className="responsive-img max-w-xs" />
         </div>
       </div>
     </div>
