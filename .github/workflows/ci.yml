@@ -2,12 +2,16 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   push:
     branches: [develop]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:

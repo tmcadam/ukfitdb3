@@ -4,11 +4,35 @@ import React, { useState, useRef, useEffect } from 'react';
  * Results component - displays search results in an expandable Card layout.
  * Uses FLIP-style animations for smooth transitions between search states.
  */
+
+const SORT_OPTIONS = [
+  { value: 'title-asc', label: 'Title (A-Z)' },
+  { value: 'title-desc', label: 'Title (Z-A)' },
+  { value: 'year-asc', label: 'Year (Oldest)' },
+  { value: 'year-desc', label: 'Year (Newest)' },
+];
+
 function Results({ results }) {
   const [expandedCard, setExpandedCard] = useState(null);
+  const [sortBy, setSortBy] = useState('title-asc');
   const prevResultsRef = useRef([]);
   const itemRefs = useRef({});
   const [animatingIds, setAnimatingIds] = useState(new Set());
+
+  // Sort results based on selected sort option
+  const sortedResults = [...results].sort((a, b) => {
+    switch (sortBy) {
+      case 'title-desc':
+        return b.title.localeCompare(a.title);
+      case 'year-asc':
+        return parseInt(a.year, 10) - parseInt(b.year, 10);
+      case 'year-desc':
+        return parseInt(b.year, 10) - parseInt(a.year, 10);
+      case 'title-asc':
+      default:
+        return a.title.localeCompare(b.title);
+    }
+  });
 
   // Track which items are new, removed, or unchanged between result sets
   useEffect(() => {
@@ -50,12 +74,29 @@ function Results({ results }) {
 
   return (
     <div className="w-full">
-      <div className="pb-4 font-bold text-gray-700 text-lg flex items-center justify-between transition-opacity duration-200 ease-out">
+      <div className="pb-4 font-medium text-gray-500 text-base flex items-center justify-between transition-opacity duration-200 ease-out">
         <span>{results.length} result{results.length === 1 ? '' : 's'} found</span>
+
+        {/* Sort Dropdown */}
+        <div className="flex items-center">
+          <label htmlFor="sort-select" className="text-sm text-gray-600 mr-2">Sort by:</label>
+          <select
+            id="sort-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="px-3 py-1.5 border border-gray-300 rounded-md text-sm bg-white text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary hover:border-gray-400 transition-colors"
+          >
+            {SORT_OPTIONS.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4">
-        {results.map((pub) => {
+        {sortedResults.map((pub) => {
           const isExpanded = expandedCard === pub.id;
           const isNew = animatingIds.has(pub.id);
 
@@ -79,22 +120,24 @@ function Results({ results }) {
             >
               {/* Card Header */}
               <div className="p-5">
-                <div className="flex justify-between items-start gap-4">
+                <div className="flex justify-between items-center gap-4">
                   <div className="flex-1">
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 leading-tight mb-2">
+                    <h3 className="text-base md:text-lg font-medium text-gray-700 leading-snug mb-2">
                       {pub.title}
                     </h3>
-                    <div className="text-sm md:text-base text-gray-600 flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-gray-800">{pub.authors}</span>
+                    <div className="text-sm text-gray-500 flex flex-wrap items-center gap-2">
+                      <span className="text-gray-600">{pub.authors}</span>
                       <span className="text-gray-400">&bull;</span>
-                      <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md font-medium">{pub.year}</span>
+                      <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md">{pub.year}</span>
                     </div>
                   </div>
 
                   {/* Chevron */}
-                  <div className="flex-shrink-0 mt-1">
-                    <span className={`inline-block w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500 transition-transform duration-300 ${isExpanded ? 'rotate-180 bg-blue-50 text-primary' : ''}`}>
-                      ▼
+                  <div className="flex-shrink-0">
+                    <span className={`flex w-8 h-8 items-center justify-center rounded-full bg-gray-50 text-gray-500 transition-transform duration-300 ${isExpanded ? 'rotate-180 bg-blue-50 text-primary' : ''}`}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
                     </span>
                   </div>
                 </div>

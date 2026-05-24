@@ -42,6 +42,8 @@ export function useSearch() {
       });
     });
 
+    filtered.sort((a, b) => a.title.localeCompare(b.title));
+
     setResults(filtered);
   };
 
