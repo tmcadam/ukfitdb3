@@ -10,8 +10,8 @@ import fortunaLogo from '../../fortuna-logo.png';
 function Introduction() {
   return (
     <div className="introduction-container">
-      <h5>Welcome to the FIT Publications Database</h5>
-      <p>
+      <h6 className="text-gray-500 text-lg font-normal mt-2">Welcome to the FIT Publications Database</h6>
+      <p className="mt-4">
         In the 1990s a need was identified by the Falkland Islands Government to
         co-ordinate within the Falkland Islands as much as possible of ongoing
         scientific activity to ensure the most efficient and effective use of
@@ -20,7 +20,7 @@ function Introduction() {
         information in a readily available form for both scientists and students
         to use.
       </p>
-      <p>
+      <p className="mt-4">
         A comprehensive database has been prepared by{' '}
         <a
           href="https://www.ukfit.org"
@@ -43,19 +43,19 @@ function Introduction() {
           Professor Jim McAdam
         </a>.
       </p>
-      <p>
+      <p className="mt-4">
         <span className="font-semibold">
           Developed by the Falkand Islands Trust with the support of the Falkland
           Islands Government and Fortuna Ltd.
         </span>
       </p>
-      <div className="logo-grid mt-8">
-        <div className="logo-item">
-          <img src={fitLogo} alt="FIT Logo" className="responsive-img max-w-xs" />
+      <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 mt-12">
+        <div className="flex justify-center md:justify-end flex-1">
+          <img src={fitLogo} alt="FIT Logo" className="w-40 md:w-48 h-auto object-contain" />
         </div>
-        <div className="logo-item flex flex-col gap-4">
-          <img src={fkLogo} alt="FK Logo" className="responsive-img max-w-xs" />
-          <img src={fortunaLogo} alt="Fortuna Logo" className="responsive-img max-w-xs" />
+        <div className="flex flex-col items-center md:items-start justify-center gap-8 flex-1">
+          <img src={fkLogo} alt="FK Logo" className="w-40 md:w-44 h-auto object-contain" />
+          <img src={fortunaLogo} alt="Fortuna Logo" className="w-40 md:w-44 h-auto object-contain" />
         </div>
       </div>
     </div>
