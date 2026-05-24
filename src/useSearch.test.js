@@ -94,6 +94,45 @@ describe('useSearch', () => {
     })
   })
 
+  describe('minimum search length', () => {
+    it('should not return results when search term has fewer than 3 characters', () => {
+      const { result } = renderHook(() => useSearch())
+
+      act(() => {
+        result.current.setSearchTerm('Ch')
+      })
+      act(() => {
+        result.current.search(mockPublications)
+      })
+      expect(result.current.results).toEqual([])
+    })
+
+    it('should return results when search term has 3 or more characters', () => {
+      const { result } = renderHook(() => useSearch())
+
+      act(() => {
+        result.current.setSearchTerm('Cha')
+      })
+      act(() => {
+        result.current.search(mockPublications)
+      })
+      expect(result.current.results.length).toBe(1)
+      expect(result.current.results[0].id).toBe('1')
+    })
+
+    it('should return empty results for short search terms even if they match', () => {
+      const { result } = renderHook(() => useSearch())
+
+      act(() => {
+        result.current.setSearchTerm('B')
+      })
+      act(() => {
+        result.current.search(mockPublications)
+      })
+      expect(result.current.results).toEqual([])
+    })
+  })
+
   describe('clearSearch', () => {
     it('should clear search term and results', () => {
       const { result } = renderHook(() => useSearch())

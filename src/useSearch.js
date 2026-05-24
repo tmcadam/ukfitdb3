@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
+const MIN_SEARCH_LENGTH = 3;
+
 export function useSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
 
   const search = (publications) => {
-    if (!searchTerm.trim()) {
+    if (!searchTerm.trim() || searchTerm.trim().length < MIN_SEARCH_LENGTH) {
       setResults([]);
       return;
     }
@@ -14,7 +16,7 @@ export function useSearch() {
     let stripped = searchTerm;
     const quoteRe = /"([^"]*)"/g;
     let match;
-    
+
     while ((match = quoteRe.exec(searchTerm)) !== null) {
       words.push(match[1]);
       stripped = stripped.replace(match[0], '');
