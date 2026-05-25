@@ -19,7 +19,11 @@ on:
           - production
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '24'
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -39,12 +43,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_branch || github.ref }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -54,6 +58,8 @@ jobs:
 
       - name: Run tests
         run: npm run test:run
+        env:
+          NODE_ENV: test
 
       - name: Build
         run: npm run build
@@ -91,5 +97,5 @@ jobs:
             mkdir -p $INFRA_DIR/nginx/html/$HTML_DIR
           EOF
 
-          # Copy built files to server
-          scp -r dist/* server:$INFRA_DIR/nginx/html/$HTML_DIR
+          # Copy built files to server and remove stale assets
+          rsync -avz --delete -e 'ssh' dist/ server:$INFRA_DIR/nginx/html/$HTML_DIR/

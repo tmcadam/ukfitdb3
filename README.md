@@ -1,4 +1,4 @@
-# React Hello World Boilerplate
+# UKFITDB3 Research Publication Finder
 
 A minimal React boilerplate with Vite, Vitest, and Testing Library.
 
