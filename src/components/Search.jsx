@@ -10,7 +10,7 @@ function Search({ searchTerm, onSearchTermChange, loadingStatus, isHero }) {
       {isHero && (
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            Explore the Trust's Publications
+            Explore the Falklands' Scientific Publications
           </h1>
           <p className="text-lg text-gray-600">
             Search our comprehensive database of documents, reports, and historic records.
