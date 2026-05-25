@@ -35,6 +35,16 @@ Run tests in watch mode (re-runs on file changes):
 npm run test
 ```
 
+## Lint Code
+
+Run ESLint with React rules to check for code quality issues:
+
+```bash
+npm run lint
+```
+
+The CI pipeline automatically runs lint checks on every push and pull request.
+
 ## Run Local Dev Server
 
 Start the development server with hot module replacement:
