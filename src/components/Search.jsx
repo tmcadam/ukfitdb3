@@ -9,7 +9,7 @@ function Search({ searchTerm, onSearchTermChange, loadingStatus, isHero }) {
     <div className={`${isHero ? 'pb-2 md:pb-4 max-w-4xl mx-auto text-center' : 'mb-8 max-w-4xl mx-auto'}`}>
       {isHero && (
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
             Explore the Falklands' Scientific Publications
           </h1>
           <p className="text-lg text-gray-600">
