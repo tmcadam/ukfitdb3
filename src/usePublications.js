@@ -9,7 +9,7 @@ export function usePublications() {
   const parseCSV = useCallback((csvData) => {
     const results = Papa.parse(csvData, { header: true });
     if (!results.data) return [];
-    
+
     return results.data
       .filter((row) => row.id && row.id !== '#REF!')
       .map((row) => ({
@@ -52,6 +52,6 @@ export function usePublications() {
     loadFromCSV: loadPublications,
     parseCSV,
     cleanYears,
-    checkValidRow: (row) => row.id && row.id !== '#REF!'
+    checkValidRow: (row) => row.id && row.id !== '#REF!',
   };
 }

@@ -28,11 +28,14 @@ export function useSearch() {
       words = words.concat(matches);
     }
 
-    const searchWords = words.map(w => w.replace(/(^\W+)|(\W+$)/g, ''));
+    const searchWords = words.map((w) => w.replace(/(^\W+)|(\W+$)/g, ''));
 
     const filtered = publications.filter((pub) => {
       return searchWords.every((word) => {
-        const pattern = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+        const pattern = new RegExp(
+          '\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+          'i',
+        );
         return (
           pattern.test(pub.title) ||
           pattern.test(pub.keywords) ||

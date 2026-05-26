@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import eslintConfigPrettier from 'eslint-config-prettier';
 import globals from 'globals';
 
 export default [
@@ -47,4 +48,5 @@ export default [
   {
     ignores: ['node_modules/', 'dist/', 'vite.config.js'],
   },
+  eslintConfigPrettier,
 ];
