@@ -3,9 +3,11 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
     plugins: {
       react,
@@ -15,7 +17,6 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest,
         ...globals.vitest,
       },
       ecmaVersion: 2022,
@@ -27,8 +28,8 @@ export default [
       },
     },
     rules: {
-      'react/react-in-jsx-scope': 'off', // Not needed in React 17+
-      'react/prop-types': 'off', // Disable if not using PropTypes
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
@@ -39,14 +40,14 @@ export default [
     },
   },
   {
-    files: ['**/*.test.js', '**/*.test.jsx', '**/*.spec.js', '**/*.spec.jsx'],
+    files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
     rules: {
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
     },
   },
   {
-    ignores: ['node_modules/', 'dist/', 'vite.config.js'],
+    ignores: ['node_modules/', 'dist/'],
   },
   eslintConfigPrettier,
 ];
