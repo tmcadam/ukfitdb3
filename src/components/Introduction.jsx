@@ -43,7 +43,7 @@ function Introduction() {
           Professor Jim McAdam
         </a>.
       </p>
-      <p className="mt-4">
+      <p className="mt-4 text-center">
         <span className="font-semibold">
           Developed by the Falkand Islands Trust with the support of the Falkland
           Islands Government and Fortuna Ltd.
