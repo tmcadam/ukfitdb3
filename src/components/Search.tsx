@@ -9,7 +9,7 @@ interface SearchProps {
  * Search component - provides search input.
  * Search is triggered automatically when the search term changes.
  */
-function Search({ searchTerm, onSearchTermChange, loadingStatus, isHero }: SearchProps) {
+function Search({ searchTerm, onSearchTermChange, isHero }: SearchProps) {
   return (
     <div
       className={`${isHero ? 'pb-2 md:pb-4 max-w-4xl mx-auto text-center' : 'mb-8 max-w-4xl mx-auto'}`}

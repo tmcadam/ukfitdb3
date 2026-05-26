@@ -38,7 +38,6 @@ function Results({ results }: ResultsProps) {
   useEffect(() => {
     const prevResults = prevResultsRef.current;
     const prevIds = new Set(prevResults.map((r) => r.id));
-    const currentIds = new Set(results.map((r) => r.id));
 
     // Find new items that need entrance animation
     const newIds = new Set<string>();
