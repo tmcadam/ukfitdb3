@@ -1,6 +1,6 @@
-import fitLogo from '../../fit-logo.png';
-import fkLogo from '../../fk-logo.png';
-import fortunaLogo from '../../fortuna-logo.png';
+import fitLogo from '../assets/fit-logo.png';
+import fkLogo from '../assets/fk-logo.png';
+import fortunaLogo from '../assets/fortuna-logo.png';
 
 /**
  * Introduction component - shows welcome page when in HOME state.

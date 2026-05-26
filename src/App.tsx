@@ -5,7 +5,7 @@ import { Display } from './types';
 import Search from './components/Search';
 import Introduction from './components/Introduction';
 import Results from './components/Results';
-import fitLogo from '../fit-logo.png';
+import fitLogo from './assets/fit-logo.png';
 
 function App() {
   const { publications, loadingStatus, loadPublications } = usePublications();
