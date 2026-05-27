@@ -20,8 +20,8 @@ function App() {
   }, [loadPublications]);
 
   useEffect(() => {
+    search(publications);
     if (searchTerm.trim()) {
-      search(publications);
       if (currentView !== Display.RESULTS) {
         setCurrentView(Display.RESULTS);
       }
