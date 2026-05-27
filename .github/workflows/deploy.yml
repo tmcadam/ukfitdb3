@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_run:
-    workflows: ["CI"]
+    workflows: ['CI']
     types:
       - completed
   workflow_dispatch:
@@ -30,10 +30,9 @@ jobs:
     name: Deploy
     if: >-
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'develop') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'develop' && github.event.workflow_run.event_name == 'push') ||
       (github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
-
     environment: >-
       ${{
         (github.event_name == 'push' && 'production') ||
@@ -56,6 +55,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run ESLint
+        run: npm run lint
+
+
       - name: Run tests
         run: npm run test:run
         env:
@@ -67,7 +70,7 @@ jobs:
           NODE_ENV: production
 
       - name: Setup SSH
-        uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
+        uses: ./.github/actions/setup-ssh # Or use swb-infra shared action
         with:
           host: ${{ vars.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
@@ -76,26 +79,20 @@ jobs:
 
       - name: Validate deployment variables
         run: |
-          if [ -z "${{ vars.INFRA_DIR }}" ]; then
-            echo "Error: INFRA_DIR GitHub variable is not set"
-            exit 1
-          fi
           if [ -z "${{ vars.HTML_DIR }}" ]; then
             echo "Error: HTML_DIR GitHub variable is not set"
             exit 1
           fi
-          echo "INFRA_DIR: ${{ vars.INFRA_DIR }}"
           echo "HTML_DIR: ${{ vars.HTML_DIR }}"
 
       - name: Deploy to remote
         env:
-          INFRA_DIR: ${{ vars.INFRA_DIR }}
           HTML_DIR: ${{ vars.HTML_DIR }}
         run: |
           # Create target directory for static files
           ssh server <<EOF
-            mkdir -p $INFRA_DIR/nginx/html/$HTML_DIR
+            mkdir -p $HTML_DIR
           EOF
 
           # Copy built files to server and remove stale assets
-          rsync -avz --delete -e 'ssh' dist/ server:$INFRA_DIR/nginx/html/$HTML_DIR/
+          rsync -avz --delete -e 'ssh' dist/ server:$HTML_DIR

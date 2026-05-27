@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -8,7 +8,10 @@ export default defineConfig({
     alias: {
       './fit-logo.png': path.resolve(__dirname, 'src/__mocks__/image-mock.js'),
       './fk-logo.png': path.resolve(__dirname, 'src/__mocks__/image-mock.js'),
-      './fortuna-logo.png': path.resolve(__dirname, 'src/__mocks__/image-mock.js'),
+      './fortuna-logo.png': path.resolve(
+        __dirname,
+        'src/__mocks__/image-mock.js',
+      ),
     },
   },
   test: {
@@ -16,4 +19,4 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/setupTests.js',
   },
-})
+});

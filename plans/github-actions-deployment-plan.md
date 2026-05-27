@@ -4,10 +4,10 @@
 
 This plan describes the GitHub Actions CI/CD pipeline for deploying the ukfitdb3 React/Vite application to two environments:
 
-| Environment | Branch    | Domain                              | Server              |
-|-------------|-----------|-------------------------------------|---------------------|
-| Staging     | `develop` | `publications-staging.smartworldbox.com` | hetzner-stg-01  |
-| Production  | `main`    | `publications.ukfit.org`            | hetzner-prd-01      |
+| Environment | Branch    | Domain                                   | Server         |
+| ----------- | --------- | ---------------------------------------- | -------------- |
+| Staging     | `develop` | `publications-staging.smartworldbox.com` | hetzner-stg-01 |
+| Production  | `main`    | `publications.ukfit.org`                 | hetzner-prd-01 |
 
 ## Architecture
 
@@ -83,9 +83,11 @@ Two workflows will be created in the **ukfitdb3** repository:
 Runs on **pull requests** from `develop` to `main`. This workflow only builds and tests — it does not deploy.
 
 **Trigger conditions:**
+
 - Pull request targeting `main` branch
 
 **Steps:**
+
 - Checkout code
 - Setup Node.js
 - Install dependencies (`npm ci`)
@@ -97,11 +99,13 @@ Runs on **pull requests** from `develop` to `main`. This workflow only builds an
 Runs on **pushes** to `main` branch and after **CI passes** on `develop` branch. Also supports **manual dispatch**.
 
 **Trigger conditions:**
+
 - Push to `main` branch → production deployment (direct, no CI gate needed)
 - Successful CI workflow run on `develop` branch → staging deployment (CI-gated)
 - Manual dispatch with environment selection
 
 **Steps:**
+
 - Checkout code
 - Setup Node.js
 - Install dependencies (`npm ci`)
@@ -182,29 +186,31 @@ server {
 
 ### Secrets (per environment - set in GitHub repo Settings > Secrets and variables > Environments)
 
-| Secret Name | Description |
-|-------------|-------------|
-| `SSH_HOST` | Server hostname or IP address |
-| `SSH_PORT` | SSH port (default: 22) |
-| `SSH_USER` | SSH username |
-| `SSH_KEY` | SSH private key (PEM format) |
+| Secret Name | Description                   |
+| ----------- | ----------------------------- |
+| `SSH_HOST`  | Server hostname or IP address |
+| `SSH_PORT`  | SSH port (default: 22)        |
+| `SSH_USER`  | SSH username                  |
+| `SSH_KEY`   | SSH private key (PEM format)  |
 
 ### Variables
 
-| Variable Name | Description |
-|---------------|-------------|
-| `INFRA_DIR` | Path to deployment directory on server (e.g., `/srv/docker/hetzner-prd-01`) |
+| Variable Name | Description                                                                 |
+| ------------- | --------------------------------------------------------------------------- |
+| `INFRA_DIR`   | Path to deployment directory on server (e.g., `/srv/docker/hetzner-prd-01`) |
 
 ## Environment Configuration
 
 Two GitHub Environments should be created in the ukfitdb3 repository:
 
 ### `staging` Environment
+
 - **Branch protection:** `develop`
 - **Secrets:** SSH credentials for hetzner-stg-01
 - **Variables:** `INFRA_DIR` pointing to the staging infrastructure directory
 
 ### `production` Environment
+
 - **Branch protection:** `main`
 - **Secrets:** SSH credentials for hetzner-prd-01
 - **Variables:** `INFRA_DIR` pointing to the production infrastructure directory
@@ -221,7 +227,7 @@ on:
     branches:
       - main
   workflow_run:
-    workflows: ["CI"]
+    workflows: ['CI']
     types:
       - completed
   workflow_dispatch:
@@ -269,7 +275,7 @@ jobs:
           NODE_ENV: production
 
       - name: Setup SSH
-        uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
+        uses: ./.github/actions/setup-ssh # Or use swb-infra shared action
         with:
           host: ${{ secrets.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
@@ -327,7 +333,7 @@ jobs:
           NODE_ENV: production
 
       - name: Setup SSH
-        uses: ./.github/actions/setup-ssh  # Or use swb-infra shared action
+        uses: ./.github/actions/setup-ssh # Or use swb-infra shared action
         with:
           host: ${{ secrets.SSH_HOST }}
           private-key: ${{ secrets.SSH_KEY }}
@@ -404,12 +410,14 @@ Before this deployment can work, the following must be set up:
 ### In swb-infra repo (on each server):
 
 1. **Create nginx html directory** for serving static files:
+
    ```bash
    mkdir -p /srv/docker/hetzner-stg-01/nginx/html
    mkdir -p /srv/docker/hetzner-prd-01/nginx/html
    ```
 
 2. **Add volume mount** to nginx service in docker-compose.yml:
+
    ```yaml
    volumes:
      - ./nginx/html:/usr/share/nginx/html:ro

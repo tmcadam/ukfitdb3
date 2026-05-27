@@ -24,7 +24,7 @@ inputs:
     default: 'ssh_key'
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Add ~/.ssh directory
       shell: bash

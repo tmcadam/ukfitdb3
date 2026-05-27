@@ -1,7 +1,6 @@
-import React from 'react';
-import fitLogo from '../../fit-logo.png';
-import fkLogo from '../../fk-logo.png';
-import fortunaLogo from '../../fortuna-logo.png';
+import fitLogo from '../assets/fit-logo.png';
+import fkLogo from '../assets/fk-logo.png';
+import fortunaLogo from '../assets/fortuna-logo.png';
 
 /**
  * Introduction component - shows welcome page when in HOME state.
@@ -10,7 +9,9 @@ import fortunaLogo from '../../fortuna-logo.png';
 function Introduction() {
   return (
     <div className="introduction-container">
-      <h6 className="text-gray-500 text-lg font-normal mt-2">Welcome to the FIT Publications Database</h6>
+      <h6 className="text-gray-500 text-lg font-normal mt-2">
+        Welcome to the FIT Publications Database
+      </h6>
       <p className="mt-4">
         In the 1990s a need was identified by the Falkland Islands Government to
         co-ordinate within the Falkland Islands as much as possible of ongoing
@@ -41,21 +42,34 @@ function Introduction() {
           className="text-primary hover:underline font-medium"
         >
           Professor Jim McAdam
-        </a>.
+        </a>
+        .
       </p>
-      <p className="mt-4">
+      <p className="mt-4 text-center">
         <span className="font-semibold">
-          Developed by the Falkand Islands Trust with the support of the Falkland
-          Islands Government and Fortuna Ltd.
+          Developed by the Falkand Islands Trust with the support of the
+          Falkland Islands Government and Fortuna Ltd.
         </span>
       </p>
       <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 mt-12">
         <div className="flex justify-center md:justify-end flex-1">
-          <img src={fitLogo} alt="FIT Logo" className="w-40 md:w-48 h-auto object-contain" />
+          <img
+            src={fitLogo}
+            alt="FIT Logo"
+            className="w-40 md:w-48 h-auto object-contain"
+          />
         </div>
         <div className="flex flex-col items-center md:items-start justify-center gap-8 flex-1">
-          <img src={fkLogo} alt="FK Logo" className="w-40 md:w-44 h-auto object-contain" />
-          <img src={fortunaLogo} alt="Fortuna Logo" className="w-40 md:w-44 h-auto object-contain" />
+          <img
+            src={fkLogo}
+            alt="FK Logo"
+            className="w-40 md:w-44 h-auto object-contain"
+          />
+          <img
+            src={fortunaLogo}
+            alt="Fortuna Logo"
+            className="w-40 md:w-44 h-auto object-contain"
+          />
         </div>
       </div>
     </div>
