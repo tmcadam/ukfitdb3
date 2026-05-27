@@ -79,26 +79,20 @@ jobs:
 
       - name: Validate deployment variables
         run: |
-          if [ -z "${{ vars.INFRA_DIR }}" ]; then
-            echo "Error: INFRA_DIR GitHub variable is not set"
-            exit 1
-          fi
           if [ -z "${{ vars.HTML_DIR }}" ]; then
             echo "Error: HTML_DIR GitHub variable is not set"
             exit 1
           fi
-          echo "INFRA_DIR: ${{ vars.INFRA_DIR }}"
           echo "HTML_DIR: ${{ vars.HTML_DIR }}"
 
       - name: Deploy to remote
         env:
-          INFRA_DIR: ${{ vars.INFRA_DIR }}
           HTML_DIR: ${{ vars.HTML_DIR }}
         run: |
           # Create target directory for static files
           ssh server <<EOF
-            mkdir -p $INFRA_DIR/nginx/html/$HTML_DIR
+            mkdir -p $HTML_DIR
           EOF
 
           # Copy built files to server and remove stale assets
-          rsync -avz --delete -e 'ssh' dist/ server:$INFRA_DIR/nginx/html/$HTML_DIR/
+          rsync -avz --delete -e 'ssh' dist/ server:$HTML_DIR
