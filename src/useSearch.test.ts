@@ -158,8 +158,8 @@ describe('useSearch', () => {
     let mockPushState: ReturnType<typeof vi.fn>;
     let mockSetSearchParams: ReturnType<typeof vi.fn>;
     let mockDeleteSearchParams: ReturnType<typeof vi.fn>;
-    let mockSearchParams: any;
-    let mockUrl: any;
+    let mockSearchParams: { delete: ReturnType<typeof vi.fn>; set: ReturnType<typeof vi.fn> };
+    let mockUrl: { searchParams: typeof mockSearchParams; pathname: string; href: string };
     const testHref = 'http://localhost:3000/';
 
     beforeEach(() => {
@@ -177,12 +177,12 @@ describe('useSearch', () => {
         href: testHref,
       };
 
-      global.URL = vi.fn(() => mockUrl) as any;
-      global.history = {
+      (globalThis as unknown as Record<string, unknown>).URL = vi.fn(() => mockUrl);
+      (globalThis as unknown as Record<string, unknown>).history = {
         ...global.history,
         pushState: mockPushState,
-      } as any;
-      (global as any).window._paq = [];
+      };
+      (window as unknown as Record<string, unknown>)._paq = [];
       // Mock window.location to match our test expectation
       Object.defineProperty(global.window, 'location', {
         value: { href: testHref, pathname: '/', search: '' },

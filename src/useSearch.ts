@@ -4,7 +4,7 @@ import type { Publication } from './types';
 // Declare _paq for Matomo tracking
 declare global {
   interface Window {
-    _paq: Array<any>;
+    _paq: unknown[];
   }
 }
 
