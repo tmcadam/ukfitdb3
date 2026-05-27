@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useSearch } from './useSearch';
 import type { Publication } from './types';
@@ -151,6 +151,185 @@ describe('useSearch', () => {
 
       expect(result.current.searchTerm).toBe('');
       expect(result.current.results).toEqual([]);
+    });
+  });
+
+  describe('search tracking (Matomo site search)', () => {
+    let mockPushState: ReturnType<typeof vi.fn>;
+    let mockSetSearchParams: ReturnType<typeof vi.fn>;
+    let mockDeleteSearchParams: ReturnType<typeof vi.fn>;
+    let mockSearchParams: { delete: ReturnType<typeof vi.fn>; set: ReturnType<typeof vi.fn> };
+    let mockUrl: { searchParams: typeof mockSearchParams; pathname: string; href: string };
+    const testHref = 'http://localhost:3000/';
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      mockPushState = vi.fn();
+      mockSetSearchParams = vi.fn();
+      mockDeleteSearchParams = vi.fn();
+      mockSearchParams = {
+        delete: mockDeleteSearchParams,
+        set: mockSetSearchParams,
+      };
+      mockUrl = {
+        searchParams: mockSearchParams,
+        pathname: '/',
+        href: testHref,
+      };
+
+      (globalThis as unknown as Record<string, unknown>).URL = vi.fn(() => mockUrl);
+      (globalThis as unknown as Record<string, unknown>).history = {
+        ...global.history,
+        pushState: mockPushState,
+      };
+      (window as unknown as Record<string, unknown>)._paq = [];
+      // Mock window.location to match our test expectation
+      Object.defineProperty(global.window, 'location', {
+        value: { href: testHref, pathname: '/', search: '' },
+        writable: true,
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      vi.restoreAllMocks();
+    });
+
+    it('should update URL with search query parameter after debounce delay', () => {
+      const { result } = renderHook(() => useSearch());
+
+      act(() => {
+        result.current.setSearchTerm('falklands');
+      });
+      act(() => {
+        result.current.search(mockPublications);
+      });
+
+      // Should not have tracked yet (before delay)
+      expect(global.history.pushState).not.toHaveBeenCalled();
+
+      // Advance timer by 1999ms — still not enough
+      act(() => {
+        vi.advanceTimersByTime(1999);
+      });
+      expect(global.history.pushState).not.toHaveBeenCalled();
+
+      // Advance timer by 1ms more — total 2000ms, should track now
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(global.URL).toHaveBeenCalledWith(testHref);
+      expect(mockSearchParams.set).toHaveBeenCalledWith('q', 'falklands');
+      expect(global.history.pushState).toHaveBeenCalled();
+    });
+
+    it('should reset debounce timer on each new search term', () => {
+      const { result } = renderHook(() => useSearch());
+
+      act(() => {
+        result.current.setSearchTerm('falklands');
+      });
+      act(() => {
+        result.current.search(mockPublications);
+      });
+
+      // Advance 1000ms — not enough
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      expect(global.history.pushState).not.toHaveBeenCalled();
+
+      // User types another character — timer resets
+      act(() => {
+        result.current.setSearchTerm('falklands ');
+      });
+      act(() => {
+        result.current.search(mockPublications);
+      });
+
+      // Advance 1000ms more — still not enough (new timer started)
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      expect(global.history.pushState).not.toHaveBeenCalled();
+
+      // Advance 1000ms more — now should track
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      expect(global.history.pushState).toHaveBeenCalled();
+      // searchTerm.trim() is called in the tracking code, so trailing space is removed
+      expect(mockSearchParams.set).toHaveBeenCalledWith('q', 'falklands');
+    });
+
+    it('should not track search terms shorter than 3 characters', () => {
+      const { result } = renderHook(() => useSearch());
+
+      act(() => {
+        result.current.setSearchTerm('ab');
+      });
+      act(() => {
+        result.current.search(mockPublications);
+      });
+
+      // Advance past debounce delay
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      expect(global.history.pushState).not.toHaveBeenCalled();
+    });
+
+    it('should clear debounce timer on clearSearch', () => {
+      const { result } = renderHook(() => useSearch());
+
+      // Track how many times pushState is called
+      const callCountBeforeClear = () => mockPushState.mock.calls.length;
+
+      act(() => {
+        result.current.setSearchTerm('falklands');
+      });
+      act(() => {
+        result.current.search(mockPublications);
+      });
+
+      // Clear search before debounce completes
+      act(() => {
+        result.current.clearSearch();
+      });
+
+      const callCountAfterClear = callCountBeforeClear();
+
+      // Advance past debounce delay
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // pushState should not be called again after clearSearch
+      expect(mockPushState.mock.calls.length).toBe(callCountAfterClear);
+    });
+
+    it('should clear the URL to root on clearSearch', () => {
+      const { result } = renderHook(() => useSearch());
+
+      act(() => {
+        result.current.setSearchTerm('falklands');
+      });
+      act(() => {
+        result.current.search(mockPublications);
+      });
+
+      // Advance past debounce delay to set the parameter
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      // Clear the search
+      act(() => {
+        result.current.clearSearch();
+      });
+
+      expect(global.history.pushState).toHaveBeenCalledWith({}, '', '/');
     });
   });
 });
